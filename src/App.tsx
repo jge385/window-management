@@ -1,5 +1,5 @@
 import React from "react";
-import { ReadExcel } from "./Import/ReadExcel";
+import { ReadExcel } from "./Components/ReadExcel";
 import { Button } from "antd";
 import HomeScreen from "./Screens/HomeScreen";
 import CalculatorScreen from "./Screens/CalculatorScreen";

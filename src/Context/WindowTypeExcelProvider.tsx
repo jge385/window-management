@@ -7,15 +7,15 @@ import React, {
 } from "react";
 
 export interface WindowTypeExcel {
-  "Type Name": string;
-  "Height in mm": number;
-  "Width in mm": number;
-  "Height Count": number;
-  "Width Count": number;
-  "Window Count": number;
-  "Aluminium Price formula": string;
-  "Glass formula": string;
-  "Acessories formula": string;
+  TypeName: string;
+  Height: number;
+  Width: number;
+  HeightCount: number;
+  WidthCount: number;
+  WindowCount: number;
+  AluminiumPriceFormula: string;
+  GlassFormula: string;
+  AcessoriesFormula: string;
 }
 
 export interface WindowTypeExcelContextValue {
