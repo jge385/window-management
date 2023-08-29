@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from "react";
-import { ReadExcel } from "../Components/ReadExcel";
 import { Button, Input } from "antd";
 import { Typography } from "antd";
 import {
@@ -9,12 +8,9 @@ import {
   Control,
   Controller,
 } from "react-hook-form";
+import WindowTypesRow from "../Components/WindowTypesRow";
 
 const { Title, Text } = Typography;
-
-interface CalculatorFormValues {
-  projectName: string;
-}
 
 const SharedFormValues = [
   {
@@ -59,14 +55,22 @@ export default function CalculatorScreen() {
     control,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<any>({
     defaultValues: {},
     mode: "onBlur",
   });
 
   const onSubmit = useCallback((data: any) => {
-    console.log(data);
+    console.log("ddddddddddddd ", data);
   }, []);
+
+  const { fields, append, remove } = useFieldArray({
+    name: "window",
+    control,
+  });
+
+  console.log("fields ", fields);
 
   return (
     <div className="p-3">
@@ -77,7 +81,7 @@ export default function CalculatorScreen() {
         <div className="grid grid-cols-6 gap-4 items-center">
           {SharedFormValues.map((sharedFormValue) => {
             return (
-              <div>
+              <div key={sharedFormValue.name}>
                 <Text> {sharedFormValue.label} </Text>
                 <Controller
                   name={sharedFormValue.name}
@@ -96,9 +100,23 @@ export default function CalculatorScreen() {
             );
           })}
         </div>
-        <Button htmlType="submit" className="mt-3">
-          Submit
-        </Button>
+        <div className="grid grid-cols-8 gap-2 items-center mt-3">
+          {fields.map((field, index) => {
+            return (
+              <div key={field.id} className="col-span-8">
+                <WindowTypesRow
+                  control={control}
+                  index={index}
+                  setValue={setValue}
+                />
+              </div>
+            );
+          })}
+        </div>
+        <div className="w-full justify-end space-x-3 mt-3">
+          <Button onClick={() => append({})}>Add a window</Button>
+          <Button htmlType="submit">Submit</Button>
+        </div>
       </form>
     </div>
   );

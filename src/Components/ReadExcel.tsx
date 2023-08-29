@@ -18,8 +18,8 @@ export function ReadExcel() {
     reader.onload = (e) => {
       const bstr = e?.target?.result;
       const workbook = read(bstr, { type: "binary" });
-      const FirstWorksheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[FirstWorksheetName];
+      const firstWorksheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[firstWorksheetName];
       const jsonData = utils.sheet_to_json(worksheet) as WindowTypeExcel[];
       setWindowTypesExcel(jsonData);
     };
@@ -35,8 +35,6 @@ export function ReadExcel() {
     },
     onDrop,
   });
-
-  console.log("pres ", windowTypesExcel);
 
   return (
     <div>

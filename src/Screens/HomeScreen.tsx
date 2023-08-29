@@ -15,6 +15,7 @@ export default function HomeScreen() {
   const redirectToCalculator = useCallback(() => {
     navigate("/calculator");
   }, []);
+
   return (
     <div className="p-3 space-y-5">
       <div className="flex justify-center">
