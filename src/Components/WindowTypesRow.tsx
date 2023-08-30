@@ -34,6 +34,19 @@ export interface FormValueItem {
   formula?: boolean;
 }
 
+const houseInfoFormValues = [
+  {
+    name: "lot",
+    label: "Lot",
+    type: "string",
+  },
+  {
+    name: "floor",
+    label: "Floor",
+    type: "string",
+  },
+];
+
 const calculatedFormValues = [
   {
     name: "AluminiumFormula",
@@ -107,6 +120,27 @@ export default function WindowTypesRow({
 
   return (
     <div className="w-full flex items-center space-x-2">
+      {houseInfoFormValues.map((row: FormValueItem) => {
+        return (
+          <div>
+            <Text> {row.label} </Text>
+            <Controller
+              name={row.name + index}
+              control={control}
+              render={({ field }) => {
+                return (
+                  <Input
+                    value={field.value}
+                    onChange={field.onChange}
+                    type={row.type}
+                  />
+                );
+              }}
+            />
+          </div>
+        );
+      })}
+
       <div>
         <div className="w-full">
           <Text> Window Type </Text>
