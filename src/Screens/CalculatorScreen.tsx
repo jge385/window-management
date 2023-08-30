@@ -9,6 +9,7 @@ import {
   Controller,
 } from "react-hook-form";
 import WindowTypesRow from "../Components/WindowTypesRow";
+import { useNavigate } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
@@ -61,8 +62,14 @@ export default function CalculatorScreen() {
     mode: "onBlur",
   });
 
+  const navigate = useNavigate();
+
+  const onCancel = useCallback(() => {
+    navigate(-1);
+  }, []);
+
   const onSubmit = useCallback((data: any) => {
-    console.log("ddddddddddddd ", data);
+    console.log("submit data ", data);
   }, []);
 
   const { fields, append, remove } = useFieldArray({
@@ -113,9 +120,12 @@ export default function CalculatorScreen() {
             );
           })}
         </div>
-        <div className="w-full justify-end space-x-3 mt-3">
+        <div className="w-full flex justify-between space-x-3 mt-3 px-5">
           <Button onClick={() => append({})}>Add a window</Button>
-          <Button htmlType="submit">Submit</Button>
+          <div className="flex space-x-3">
+            <Button onClick={onCancel}>Cancel</Button>
+            <Button htmlType="submit">Submit</Button>
+          </div>
         </div>
       </form>
     </div>

@@ -10,14 +10,6 @@ const columns: ColumnsType<WindowTypeExcel> = [
     dataIndex: "TypeName",
   },
   {
-    title: "Height in mm",
-    dataIndex: "Height",
-  },
-  {
-    title: "Width in mm",
-    dataIndex: "Width",
-  },
-  {
     title: "Height Count ",
     dataIndex: "HeightCount",
   },

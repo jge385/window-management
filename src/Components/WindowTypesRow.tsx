@@ -3,9 +3,19 @@ import {
   useWindowTypeExcel,
   WindowTypeExcel,
 } from "../Context/WindowTypeExcelProvider";
-import { Select } from "antd";
+import { Button, Select } from "antd";
 import { Typography, Input } from "antd";
-import { Controller, Control, UseFormSetValue } from "react-hook-form";
+import {
+  Controller,
+  Control,
+  useWatch,
+  UseFormSetValue,
+} from "react-hook-form";
+import {
+  convertStringToFormula,
+  extractFunctionParams,
+  containDigit,
+} from "../Utilities/ConvertStringFormula";
 
 const { Text } = Typography;
 
@@ -21,33 +31,33 @@ export interface FormValueItem {
   name: string;
   label: string;
   type: string;
+  formula?: boolean;
 }
-
-const presetFormValues: FormValueItem[] = [
-  {
-    name: "Height",
-    label: "Height",
-    type: "number",
-  },
-  {
-    name: "Width",
-    label: "Width",
-    type: "number",
-  },
-];
-
-const presetFormValueNames = presetFormValues.map((formValue) => {
-  return formValue.name;
-});
 
 const calculatedFormValues = [
   {
-    name: "AluminiumPrice",
+    name: "AluminiumFormula",
     label: "Aluminium Price",
     type: "number",
     formula: true,
   },
+  {
+    name: "GlassFormula",
+    label: "Glass Price",
+    type: "number",
+    formula: true,
+  },
+  {
+    name: "AcessoriesFormula",
+    label: "Acessories Price",
+    type: "number",
+    formula: true,
+  },
 ];
+
+const calculatedFormValueNames = calculatedFormValues.map(
+  (formValue) => formValue.name
+);
 
 export default function WindowTypesRow({
   control,
@@ -58,6 +68,9 @@ export default function WindowTypesRow({
   index: number;
   setValue: UseFormSetValue<any>;
 }) {
+  const rowData = useWatch({ control });
+  console.log("rowData", rowData);
+
   const { windowTypesExcel } = useWindowTypeExcel();
 
   const windowTypeOptions = useMemo(() => {
@@ -77,8 +90,6 @@ export default function WindowTypesRow({
     setSelectedWindowTypeOption(option!);
   }, []);
 
-  console.log("selectedWindowTypeOption ", selectedWindowTypeOption);
-
   const windowTypeRow = useMemo(() => {
     const rowProperties = [];
     for (let i = 1; i <= selectedWindowTypeOption.HeightCount; i++) {
@@ -91,32 +102,40 @@ export default function WindowTypesRow({
     for (let i = 1; i <= selectedWindowTypeOption.WidthCount; i++) {
       rowProperties.push({ name: "w" + i, label: "w" + i, type: "number" });
     }
-    return [...presetFormValues, ...rowProperties, ...calculatedFormValues];
-  }, [selectedWindowTypeOption]);
-  console.log("windowTypeRow ", windowTypeRow);
-  console.log("selectedWindowTypeOption ", selectedWindowTypeOption);
-
-  useEffect(() => {
-    presetFormValueNames.forEach((name) => {
-      setValue(
-        name + index,
-        selectedWindowTypeOption[name as keyof WindowTypeExcel]
-      );
-    });
+    return [...rowProperties, ...calculatedFormValues];
   }, [selectedWindowTypeOption]);
 
   return (
     <div className="w-full flex items-center space-x-2">
       <div>
-        <Text> Window Type </Text>
+        <div className="w-full">
+          <Text> Window Type </Text>
+        </div>
         <Select
           options={windowTypeOptions}
           value={selectedWindowTypeOption.TypeName}
           onChange={handleOnChangeSelect}
         />
       </div>
-
-      {windowTypeRow.map((row) => {
+      {windowTypeRow.map((row: FormValueItem) => {
+        let variables: string[] = [];
+        let result: number;
+        if (row.formula) {
+          const realFormula = convertStringToFormula(
+            selectedWindowTypeOption[
+              row.name as keyof WindowTypeExcel
+            ] as string,
+            selectedWindowTypeOption.WidthCount,
+            selectedWindowTypeOption.HeightCount
+          );
+          variables = extractFunctionParams(realFormula);
+          const params = variables.map((variable) => {
+            return Number(
+              rowData[containDigit(variable) ? variable + index : variable]
+            );
+          });
+          result = realFormula(...params);
+        }
         return (
           <div>
             <Text> {row.label} </Text>
@@ -124,19 +143,22 @@ export default function WindowTypesRow({
               name={row.name + index}
               control={control}
               render={({ field }) => {
+                if (result && field.value !== result) {
+                  field.onChange(result);
+                }
                 return (
                   <Input
-                    // defaultValue={
-                    //   presetFormValueNames.includes(row.name)
-                    //     ? selectedWindowTypeOption[
-                    //         row.name as keyof WindowTypeExcel
-                    //       ]
-                    //     : field.value
-                    // }
-                    value={field.value}
+                    value={result || field.value}
                     onChange={field.onChange}
                     type={row.type}
-                    disabled={presetFormValueNames.includes(row.name)}
+                    disabled={row.formula}
+                    placeholder={
+                      row.formula
+                        ? (selectedWindowTypeOption[
+                            row.name as keyof WindowTypeExcel
+                          ] as string)
+                        : ""
+                    }
                   />
                 );
               }}
@@ -144,6 +166,46 @@ export default function WindowTypesRow({
           </div>
         );
       })}
+      <div>
+        <Text> Count </Text>
+        <Controller
+          name={"count" + index}
+          control={control}
+          render={({ field }) => {
+            return (
+              <Input
+                value={field.value}
+                onChange={field.onChange}
+                type="number"
+              />
+            );
+          }}
+        />
+      </div>
+      <div>
+        <Text> Cost </Text>
+        <Controller
+          name={"rowCost" + index}
+          control={control}
+          render={({ field }) => {
+            const rowPriceSum = calculatedFormValueNames.reduce(
+              (accumulator, currentValue) => {
+                return accumulator + rowData[currentValue + index];
+              },
+              0
+            );
+            return (
+              <Input
+                value={rowPriceSum}
+                onChange={field.onChange}
+                type="number"
+                disabled={true}
+                placeholder="cost for the role"
+              />
+            );
+          }}
+        />
+      </div>
     </div>
   );
 }
