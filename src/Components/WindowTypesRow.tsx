@@ -125,7 +125,7 @@ export default function WindowTypesRow({
           <div>
             <Text> {row.label} </Text>
             <Controller
-              name={row.name + index}
+              name={`window.${index}.${row.name}`}
               control={control}
               render={({ field }) => {
                 return (
@@ -165,7 +165,9 @@ export default function WindowTypesRow({
           variables = extractFunctionParams(realFormula);
           const params = variables.map((variable) => {
             return Number(
-              rowData[containDigit(variable) ? variable + index : variable]
+              containDigit(variable) // use this to check if the variable is inside window object (eg h1,w1) or total object (eg fixedCost)
+                ? rowData.window[index][variable]
+                : rowData[variable]
             );
           });
           result = realFormula(...params);
@@ -174,7 +176,7 @@ export default function WindowTypesRow({
           <div>
             <Text> {row.label} </Text>
             <Controller
-              name={row.name + index}
+              name={`window.${index}.${row.name}`}
               control={control}
               render={({ field }) => {
                 if (result && field.value !== result) {
@@ -203,7 +205,7 @@ export default function WindowTypesRow({
       <div>
         <Text> Count </Text>
         <Controller
-          name={"count" + index}
+          name={`window.${index}.count`}
           control={control}
           render={({ field }) => {
             return (
@@ -219,18 +221,19 @@ export default function WindowTypesRow({
       <div>
         <Text> Cost </Text>
         <Controller
-          name={"rowCost" + index}
+          name={`window.${index}.rowCost`}
           control={control}
           render={({ field }) => {
             const rowPriceSum = calculatedFormValueNames.reduce(
               (accumulator, currentValue) => {
-                return accumulator + rowData[currentValue + index];
+                return accumulator + rowData.window[index][currentValue];
               },
               0
             );
+            const rowTotalCost = rowData.window[index].count * rowPriceSum;
             return (
               <Input
-                value={rowPriceSum}
+                value={rowTotalCost}
                 onChange={field.onChange}
                 type="number"
                 disabled={true}
