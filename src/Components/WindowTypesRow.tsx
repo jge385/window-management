@@ -36,7 +36,6 @@ export interface FormValueItem {
   name: string;
   label: string;
   type?: string;
-  formula?: boolean;
 }
 
 const houseInfoFormValues = [
@@ -57,19 +56,16 @@ const calculatedFormValues = [
     name: "AluminiumFormula",
     label: "Aluminium Price",
     type: "number",
-    formula: true,
   },
   {
     name: "GlassFormula",
     label: "Glass Price",
     type: "number",
-    formula: true,
   },
   {
     name: "AcessoriesFormula",
     label: "Acessories Price",
     type: "number",
-    formula: true,
   },
 ];
 
@@ -122,7 +118,7 @@ export default function WindowTypesRow({
     for (let i = 1; i <= selectedWindowTypeOption.WidthCount; i++) {
       rowProperties.push({ name: "w" + i, label: "w" + i, type: "number" });
     }
-    return [...rowProperties, ...calculatedFormValues];
+    return rowProperties;
   }, [selectedWindowTypeOption]);
 
   const windowTypeSelectRow = useMemo(() => {
@@ -173,29 +169,6 @@ export default function WindowTypesRow({
         />
       </div>
       {windowTypeInputRow.map((row: FormValueItem) => {
-        let variables: string[] = [];
-        let result: number;
-        if (row.formula) {
-          const realFormula = convertStringToFormula(
-            selectedWindowTypeOption[
-              row.name as keyof WindowTypeExcel
-            ] as string,
-            selectedWindowTypeOption.WidthCount,
-            selectedWindowTypeOption.HeightCount,
-            selectedWindowTypeOption.WindowCount
-          );
-          variables = extractFunctionParams(realFormula);
-          const params = variables.map((variable) => {
-            return Number(
-              containDigit(variable) // use this to check if the variable is inside window object (eg h1,w1, win1) or total object (eg fixedCost)
-                ? containWin(variable) // use this to separate the logic for h1,w1 and win1 because h1 is number while win1 points to shared variable
-                  ? rowData[rowData.window[index][variable]]
-                  : rowData.window[index][variable]
-                : rowData[variable]
-            );
-          });
-          result = realFormula(...params);
-        }
         return (
           <div>
             <Text> {row.label} </Text>
@@ -203,22 +176,11 @@ export default function WindowTypesRow({
               name={`window.${index}.${row.name}`}
               control={control}
               render={({ field }) => {
-                if (result && field.value !== result) {
-                  field.onChange(result);
-                }
                 return (
                   <Input
-                    value={result || field.value}
+                    value={field.value}
                     onChange={field.onChange}
                     type={row.type}
-                    disabled={row.formula}
-                    placeholder={
-                      row.formula
-                        ? (selectedWindowTypeOption[
-                            row.name as keyof WindowTypeExcel
-                          ] as string)
-                        : ""
-                    }
                   />
                 );
               }}
@@ -242,6 +204,52 @@ export default function WindowTypesRow({
                     options={windowStatusSelectOptions}
                     value={field.value}
                     onChange={field.onChange}
+                  />
+                );
+              }}
+            />
+          </div>
+        );
+      })}
+      {calculatedFormValues.map((row: FormValueItem) => {
+        const realFormula = convertStringToFormula(
+          selectedWindowTypeOption[row.name as keyof WindowTypeExcel] as string,
+          selectedWindowTypeOption.WidthCount,
+          selectedWindowTypeOption.HeightCount,
+          selectedWindowTypeOption.WindowCount
+        );
+        const variables = extractFunctionParams(realFormula);
+        const params = variables.map((variable: string) => {
+          return Number(
+            containDigit(variable) // use this to check if the variable is inside window object (eg h1,w1, win1) or total object (eg fixedCost)
+              ? containWin(variable) // use this to separate the logic for h1,w1 and win1 because h1 is number while win1 points to shared variable
+                ? rowData[rowData.window[index][variable]]
+                : rowData.window[index][variable]
+              : rowData[variable]
+          );
+        });
+        const result = realFormula(...params);
+        return (
+          <div>
+            <Text> {row.label} </Text>
+            <Controller
+              name={`window.${index}.${row.name}`}
+              control={control}
+              render={({ field }) => {
+                if (result && field.value !== result) {
+                  field.onChange(result);
+                }
+                return (
+                  <Input
+                    value={result || field.value}
+                    onChange={field.onChange}
+                    type={row.type}
+                    disabled={true}
+                    placeholder={
+                      selectedWindowTypeOption[
+                        row.name as keyof WindowTypeExcel
+                      ] as string
+                    }
                   />
                 );
               }}
