@@ -51,6 +51,19 @@ const houseInfoFormValues = [
   },
 ];
 
+const windowInfoFormValues = [
+  {
+    name: "height",
+    label: "Height",
+    type: "number",
+  },
+  {
+    name: "width",
+    label: "Width",
+    type: "number",
+  },
+];
+
 const calculatedFormValues = [
   {
     name: "AluminiumFormula",
@@ -106,7 +119,7 @@ export default function WindowTypesRow({
     setSelectedWindowTypeOption(option!);
   }, []);
 
-  const windowTypeInputRow = useMemo(() => {
+  const windowDetailFormValues = useMemo(() => {
     const rowProperties = [];
     for (let i = 1; i <= selectedWindowTypeOption.HeightCount; i++) {
       rowProperties.push({
@@ -121,7 +134,7 @@ export default function WindowTypesRow({
     return rowProperties;
   }, [selectedWindowTypeOption]);
 
-  const windowTypeSelectRow = useMemo(() => {
+  const windowStatusFormValues = useMemo(() => {
     const rowProperties = [];
     for (let i = 1; i <= selectedWindowTypeOption.WindowCount; i++) {
       rowProperties.push({
@@ -168,7 +181,7 @@ export default function WindowTypesRow({
           onChange={handleOnChangeSelect}
         />
       </div>
-      {windowTypeInputRow.map((row: FormValueItem) => {
+      {windowInfoFormValues.map((row: FormValueItem) => {
         return (
           <div>
             <Text> {row.label} </Text>
@@ -188,7 +201,39 @@ export default function WindowTypesRow({
           </div>
         );
       })}
-      {windowTypeSelectRow.map((row: FormValueItem) => {
+      {windowDetailFormValues.map((row: FormValueItem) => {
+        let presetValue: number | undefined;
+        if (rowData.window[index].height && row.name.includes("h")) {
+          presetValue =
+            rowData.window[index].height / selectedWindowTypeOption.HeightCount;
+        }
+        if (rowData.window[index].width && row.name.includes("w")) {
+          presetValue =
+            rowData.window[index].width / selectedWindowTypeOption.WidthCount;
+        }
+        return (
+          <div>
+            <Text> {row.label} </Text>
+            <Controller
+              name={`window.${index}.${row.name}`}
+              control={control}
+              render={({ field }) => {
+                if (presetValue && !field.value) {
+                  field.onChange(presetValue);
+                }
+                return (
+                  <Input
+                    value={presetValue || field.value}
+                    onChange={field.onChange}
+                    type={row.type}
+                  />
+                );
+              }}
+            />
+          </div>
+        );
+      })}
+      {windowStatusFormValues.map((row: FormValueItem) => {
         return (
           <div>
             <Text> {row.label} </Text>
