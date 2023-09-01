@@ -15,22 +15,27 @@ import {
   convertStringToFormula,
   extractFunctionParams,
   containDigit,
+  containWin,
 } from "../Utilities/ConvertStringFormula";
+import {
+  WINDOW_STATUS_LABEL_MAP,
+  WindowStatusLabelMap,
+} from "../Consts/WindowStatusMap";
+import { SHARED_VARIABLES } from "../Consts/SharedVariables";
 
 const { Text } = Typography;
 
-// const selectFormValues = [
-//   {
-//     name: "h" + i,
-//     label: "h" + i,
-//     type: "number",
-//   },
-// ];
+const windowStatusSelectOptions = SHARED_VARIABLES.map((variable) => {
+  return {
+    value: variable,
+    label: WINDOW_STATUS_LABEL_MAP[variable as keyof WindowStatusLabelMap],
+  };
+});
 
 export interface FormValueItem {
   name: string;
   label: string;
-  type: string;
+  type?: string;
   formula?: boolean;
 }
 
@@ -76,10 +81,12 @@ export default function WindowTypesRow({
   control,
   index,
   setValue,
+  removeRow,
 }: {
   control: Control;
   index: number;
   setValue: UseFormSetValue<any>;
+  removeRow: any;
 }) {
   const rowData = useWatch({ control });
   console.log("rowData", rowData);
@@ -103,7 +110,7 @@ export default function WindowTypesRow({
     setSelectedWindowTypeOption(option!);
   }, []);
 
-  const windowTypeRow = useMemo(() => {
+  const windowTypeInputRow = useMemo(() => {
     const rowProperties = [];
     for (let i = 1; i <= selectedWindowTypeOption.HeightCount; i++) {
       rowProperties.push({
@@ -117,6 +124,21 @@ export default function WindowTypesRow({
     }
     return [...rowProperties, ...calculatedFormValues];
   }, [selectedWindowTypeOption]);
+
+  const windowTypeSelectRow = useMemo(() => {
+    const rowProperties = [];
+    for (let i = 1; i <= selectedWindowTypeOption.WindowCount; i++) {
+      rowProperties.push({
+        name: "win" + i,
+        label: "win" + i,
+      });
+    }
+    return rowProperties;
+  }, [selectedWindowTypeOption]);
+
+  const onRemoveRow = useCallback(() => {
+    removeRow(index);
+  }, []);
 
   return (
     <div className="w-full flex items-center space-x-2">
@@ -140,7 +162,6 @@ export default function WindowTypesRow({
           </div>
         );
       })}
-
       <div>
         <div className="w-full">
           <Text> Window Type </Text>
@@ -151,7 +172,7 @@ export default function WindowTypesRow({
           onChange={handleOnChangeSelect}
         />
       </div>
-      {windowTypeRow.map((row: FormValueItem) => {
+      {windowTypeInputRow.map((row: FormValueItem) => {
         let variables: string[] = [];
         let result: number;
         if (row.formula) {
@@ -160,13 +181,16 @@ export default function WindowTypesRow({
               row.name as keyof WindowTypeExcel
             ] as string,
             selectedWindowTypeOption.WidthCount,
-            selectedWindowTypeOption.HeightCount
+            selectedWindowTypeOption.HeightCount,
+            selectedWindowTypeOption.WindowCount
           );
           variables = extractFunctionParams(realFormula);
           const params = variables.map((variable) => {
             return Number(
-              containDigit(variable) // use this to check if the variable is inside window object (eg h1,w1) or total object (eg fixedCost)
-                ? rowData.window[index][variable]
+              containDigit(variable) // use this to check if the variable is inside window object (eg h1,w1, win1) or total object (eg fixedCost)
+                ? containWin(variable) // use this to separate the logic for h1,w1 and win1 because h1 is number while win1 points to shared variable
+                  ? rowData[rowData.window[index][variable]]
+                  : rowData.window[index][variable]
                 : rowData[variable]
             );
           });
@@ -195,6 +219,26 @@ export default function WindowTypesRow({
                           ] as string)
                         : ""
                     }
+                  />
+                );
+              }}
+            />
+          </div>
+        );
+      })}
+      {windowTypeSelectRow.map((row: FormValueItem) => {
+        return (
+          <div>
+            <Text> {row.label} </Text>
+            <Controller
+              name={`window.${index}.${row.name}`}
+              control={control}
+              render={({ field }) => {
+                return (
+                  <Select
+                    options={windowStatusSelectOptions}
+                    value={field.value}
+                    onChange={field.onChange}
                   />
                 );
               }}
@@ -243,6 +287,7 @@ export default function WindowTypesRow({
           }}
         />
       </div>
+      <Button onClick={onRemoveRow}> Remove </Button>
     </div>
   );
 }

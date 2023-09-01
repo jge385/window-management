@@ -22,7 +22,7 @@ const MOCK_INITIAL_WINDOW_TYPES = [
     HeightCount: 1,
     WidthCount: 3,
     WindowCount: 3,
-    AluminiumFormula: "(w1+h1) * fixedCost",
+    AluminiumFormula: "(w1+h1) * win1",
     GlassFormula: "(w2+h1) * 2",
     AcessoriesFormula: "(w3+h1) * 1",
   },

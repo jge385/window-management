@@ -1,9 +1,10 @@
-const SHARED_VARIABLES = ["fixedCost"];
+import { SHARED_VARIABLES } from "../Consts/SharedVariables";
 
 export const convertStringToFormula = (
   formula: string,
   widthCount: number,
-  heightCount: number
+  heightCount: number,
+  windowCount: number
 ) => {
   const paramList: string[] = [];
   for (let i = 1; i <= widthCount; i++) {
@@ -11,6 +12,9 @@ export const convertStringToFormula = (
   }
   for (let j = 1; j <= heightCount; j++) {
     paramList.push("h" + j);
+  }
+  for (let k = 1; k <= windowCount; k++) {
+    paramList.push("win" + k);
   }
   return new Function(
     [...paramList, ...SHARED_VARIABLES].join(","),
@@ -29,4 +33,9 @@ export const extractFunctionParams = (func: any) => {
 
 export const containDigit = (value: string) => {
   return /\d/.test(value);
+};
+
+// if the field is win1, the value will be like "fixedCost", need to use shared variable data
+export const containWin = (value: string) => {
+  return value.includes("win");
 };
