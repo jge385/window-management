@@ -234,6 +234,9 @@ export default function WindowTypesRow({
               name={`window.${index}.${row.name}`}
               control={control}
               render={({ field }) => {
+                if (!field.value) {
+                  field.onChange(windowStatusSelectOptions[0].value);
+                }
                 return (
                   <Select
                     options={windowStatusSelectOptions}

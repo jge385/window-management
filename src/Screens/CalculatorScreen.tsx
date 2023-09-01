@@ -154,7 +154,7 @@ export default function CalculatorScreen() {
           })}
         </div>
         <div className="w-full flex justify-between space-x-3 mt-3 px-5">
-          <Button onClick={() => append({})}>Add a window</Button>
+          <Button onClick={() => append({ count: 1 })}>Add a window</Button>
           <div className="flex space-x-3">
             <Button onClick={onCancel}>Cancel</Button>
             <Button htmlType="submit">Submit</Button>
