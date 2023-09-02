@@ -149,6 +149,24 @@ export default function WindowTypesRow({
     removeRow(index);
   }, []);
 
+  useEffect(() => {
+    for (let i = 1; i <= selectedWindowTypeOption.HeightCount; i++) {
+      setValue(
+        `window.${index}.h${i}`,
+        rowData.window[index].height / selectedWindowTypeOption.HeightCount
+      );
+    }
+  }, [rowData.window[index].height]);
+
+  useEffect(() => {
+    for (let i = 1; i <= selectedWindowTypeOption.WidthCount; i++) {
+      setValue(
+        `window.${index}.w${i}`,
+        rowData.window[index].width / selectedWindowTypeOption.WidthCount
+      );
+    }
+  }, [rowData.window[index].width]);
+
   return (
     <div className="w-full flex items-center space-x-2">
       {houseInfoFormValues.map((row: FormValueItem) => {
@@ -202,15 +220,6 @@ export default function WindowTypesRow({
         );
       })}
       {windowDetailFormValues.map((row: FormValueItem) => {
-        let presetValue: number | undefined;
-        if (rowData.window[index].height && row.name.includes("h")) {
-          presetValue =
-            rowData.window[index].height / selectedWindowTypeOption.HeightCount;
-        }
-        if (rowData.window[index].width && row.name.includes("w")) {
-          presetValue =
-            rowData.window[index].width / selectedWindowTypeOption.WidthCount;
-        }
         return (
           <div key={row.name + index}>
             <Text> {row.label} </Text>
@@ -218,14 +227,9 @@ export default function WindowTypesRow({
               name={`window.${index}.${row.name}`}
               control={control}
               render={({ field }) => {
-                if (presetValue && !field.value) {
-                  field.onChange(presetValue);
-                }
-                console.log("presetValue ", presetValue);
-
                 return (
                   <Input
-                    value={presetValue || field.value}
+                    value={field.value}
                     onChange={field.onChange}
                     type={row.type}
                   />
