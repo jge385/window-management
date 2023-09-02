@@ -167,8 +167,19 @@ export default function WindowTypesRow({
     }
   }, [rowData.window[index].width]);
 
+  useEffect(() => {
+    if (!rowData.window[index].lot) {
+      const defaultLot = index > 0 ? rowData.window[index - 1].lot : 1;
+      setValue(`window.${index}.lot`, defaultLot);
+    }
+    if (!rowData.window[index].floor) {
+      const defaultFloor = index > 0 ? rowData.window[index - 1].floor : 1;
+      setValue(`window.${index}.floor`, defaultFloor);
+    }
+  }, []);
+
   return (
-    <div className="w-full flex items-center space-x-2">
+    <div className="w-full grid grid-cols-12 items-center space-x-2">
       {houseInfoFormValues.map((row: FormValueItem) => {
         return (
           <div key={row.name + index}>
@@ -197,6 +208,7 @@ export default function WindowTypesRow({
           options={windowTypeOptions}
           value={selectedWindowTypeOption.TypeName}
           onChange={handleOnChangeSelect}
+          className="w-full"
         />
       </div>
       {windowInfoFormValues.map((row: FormValueItem) => {
@@ -242,7 +254,9 @@ export default function WindowTypesRow({
       {windowStatusFormValues.map((row: FormValueItem) => {
         return (
           <div key={row.name + index}>
-            <Text> {row.label} </Text>
+            <div className="w-full">
+              <Text> {row.label}</Text>
+            </div>
             <Controller
               name={`window.${index}.${row.name}`}
               control={control}
@@ -255,6 +269,7 @@ export default function WindowTypesRow({
                     options={windowStatusSelectOptions}
                     value={field.value}
                     onChange={field.onChange}
+                    className="w-full"
                   />
                 );
               }}

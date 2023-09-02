@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { Button, Input } from "antd";
-import { Typography } from "antd";
+import { Typography, Divider } from "antd";
 import {
   useForm,
   useFieldArray,
@@ -149,12 +149,22 @@ export default function CalculatorScreen() {
                   setValue={setValue}
                   removeRow={remove}
                 />
+                <Divider />
               </div>
             );
           })}
         </div>
         <div className="w-full flex justify-between space-x-3 mt-3 px-5">
-          <Button onClick={() => append({ count: 1 })}>Add a window</Button>
+          <Button
+            onClick={() =>
+              append({
+                count: 1,
+              })
+            }
+          >
+            Add a window
+          </Button>
+          {/* <Button onClick={() => append({ count: 1 })}>Add a window</Button> */}
           <div className="flex space-x-3">
             <Button onClick={onCancel}>Cancel</Button>
             <Button htmlType="submit">Submit</Button>
