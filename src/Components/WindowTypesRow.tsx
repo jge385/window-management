@@ -153,7 +153,7 @@ export default function WindowTypesRow({
     <div className="w-full flex items-center space-x-2">
       {houseInfoFormValues.map((row: FormValueItem) => {
         return (
-          <div>
+          <div key={row.name + index}>
             <Text> {row.label} </Text>
             <Controller
               name={`window.${index}.${row.name}`}
@@ -183,7 +183,7 @@ export default function WindowTypesRow({
       </div>
       {windowInfoFormValues.map((row: FormValueItem) => {
         return (
-          <div>
+          <div key={row.name + index}>
             <Text> {row.label} </Text>
             <Controller
               name={`window.${index}.${row.name}`}
@@ -212,7 +212,7 @@ export default function WindowTypesRow({
             rowData.window[index].width / selectedWindowTypeOption.WidthCount;
         }
         return (
-          <div>
+          <div key={row.name + index}>
             <Text> {row.label} </Text>
             <Controller
               name={`window.${index}.${row.name}`}
@@ -221,6 +221,8 @@ export default function WindowTypesRow({
                 if (presetValue && !field.value) {
                   field.onChange(presetValue);
                 }
+                console.log("presetValue ", presetValue);
+
                 return (
                   <Input
                     value={presetValue || field.value}
@@ -235,7 +237,7 @@ export default function WindowTypesRow({
       })}
       {windowStatusFormValues.map((row: FormValueItem) => {
         return (
-          <div>
+          <div key={row.name + index}>
             <Text> {row.label} </Text>
             <Controller
               name={`window.${index}.${row.name}`}
@@ -275,7 +277,7 @@ export default function WindowTypesRow({
         });
         const result = realFormula(...params);
         return (
-          <div>
+          <div key={row.name + index}>
             <Text> {row.label} </Text>
             <Controller
               name={`window.${index}.${row.name}`}
