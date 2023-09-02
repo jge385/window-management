@@ -204,11 +204,26 @@ export default function WindowTypesRow({
         <div className="w-full">
           <Text> Window Type </Text>
         </div>
-        <Select
-          options={windowTypeOptions}
-          value={selectedWindowTypeOption.TypeName}
-          onChange={handleOnChangeSelect}
-          className="w-full"
+        <Controller
+          name={`window.${index}.windowType`}
+          control={control}
+          render={({ field }) => {
+            if (!field.value) {
+              field.onChange(windowTypesExcel[0].TypeName);
+            }
+            const onChange = (value: string) => {
+              handleOnChangeSelect(value);
+              field.onChange(value);
+            };
+            return (
+              <Select
+                options={windowTypeOptions}
+                value={field.value}
+                onChange={onChange}
+                className="w-full"
+              />
+            );
+          }}
         />
       </div>
       {windowInfoFormValues.map((row: FormValueItem) => {
