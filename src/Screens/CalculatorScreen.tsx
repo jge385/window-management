@@ -21,6 +21,11 @@ const SharedFormValues = [
     type: "text",
   },
   {
+    name: "color",
+    label: "Color",
+    type: "text",
+  },
+  {
     name: "fixedCost",
     label: "Fixed Cost",
     type: "number",

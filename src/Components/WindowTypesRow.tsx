@@ -194,7 +194,8 @@ export default function WindowTypesRow({
   }, []);
 
   return (
-    <div className="w-full grid grid-cols-12 items-center space-x-2">
+    <div className="w-full grid grid-cols-8 items-center space-x-2">
+      {/* lot, floor */}
       {houseInfoFormValues.map((row: FormValueItem) => {
         return (
           <div key={row.name + index}>
@@ -215,6 +216,26 @@ export default function WindowTypesRow({
           </div>
         );
       })}
+      {/* window id */}
+      <div>
+        <div className="w-full">
+          <Text> Window Id </Text>
+        </div>
+        <Controller
+          name={`window.${index}.id`}
+          control={control}
+          render={({ field }) => {
+            const windowId = `${rowData.projectName || "no project name"} - ${
+              rowData.window[index].lot
+            } - ${rowData.window[index].floor} - ${index + 1}`;
+            if (windowId !== field.value) {
+              field.onChange(windowId);
+            }
+            return <Input value={field.value} onChange={field.onChange} />;
+          }}
+        />
+      </div>
+      {/* window type */}
       <div>
         <div className="w-full">
           <Text> Window Type </Text>
@@ -238,6 +259,22 @@ export default function WindowTypesRow({
                 className="w-full"
               />
             );
+          }}
+        />
+      </div>
+      {/* Window color */}
+      <div>
+        <div className="w-full">
+          <Text> Window Color </Text>
+        </div>
+        <Controller
+          name={`window.${index}.windowColor`}
+          control={control}
+          render={({ field }) => {
+            if (!field.value && rowData.color) {
+              field.onChange(rowData.color);
+            }
+            return <Input value={field.value} onChange={field.onChange} />;
           }}
         />
       </div>
