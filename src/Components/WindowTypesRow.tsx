@@ -480,6 +480,9 @@ export default function WindowTypesRow({
               0
             );
             const rowTotalCost = rowData.window[index].count * rowPriceSum;
+            if (rowTotalCost && field.value !== rowTotalCost) {
+              field.onChange(rowTotalCost);
+            }
             return (
               <Input
                 value={rowTotalCost}

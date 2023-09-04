@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Button, Input } from "antd";
+import { Button, Input, Select } from "antd";
 import { Typography, Divider } from "antd";
 import {
   useForm,
@@ -10,7 +10,7 @@ import {
 } from "react-hook-form";
 import WindowTypesRow from "../Components/WindowTypesRow";
 import { useNavigate } from "react-router-dom";
-import ExcelJS from "exceljs";
+import { ExportExcel } from "../Components/ExportExcel";
 
 const { Title, Text } = Typography;
 
@@ -24,6 +24,11 @@ const SharedFormValues = [
     name: "color",
     label: "Color",
     type: "text",
+  },
+  {
+    name: "windZone",
+    label: "Wind Zone",
+    type: "select",
   },
   {
     name: "fixedCost",
@@ -77,6 +82,33 @@ const SharedFormValues = [
   },
 ];
 
+const windZoneSelectOptions = [
+  {
+    value: "Low",
+    label: "Low",
+  },
+  {
+    value: "Medium",
+    label: "Medium",
+  },
+  {
+    value: "High",
+    label: "High",
+  },
+  {
+    value: "Very High",
+    label: "Very High",
+  },
+  {
+    value: "Extra High",
+    label: "Extra High",
+  },
+  {
+    value: "Specific Engineering Design",
+    label: "Specific Engineering Design",
+  },
+];
+
 export default function CalculatorScreen() {
   const {
     control,
@@ -94,39 +126,40 @@ export default function CalculatorScreen() {
     navigate(-1);
   }, []);
 
-  const onSubmit = useCallback(async (data1: any) => {
-    console.log("submit data ", data1);
+  const onSubmit = useCallback((data: any) => {
+    console.log("submit data ", data);
 
-    const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Sheet 1");
+    ExportExcel(data);
+    // const workbook = new ExcelJS.Workbook();
+    // const worksheet = workbook.addWorksheet("Sheet 1");
 
-    worksheet.columns = [
-      { header: "Name", key: "name", width: 15 },
-      { header: "Age", key: "age", width: 10 },
-      // Add more columns as needed
-    ];
+    // worksheet.columns = [
+    //   { header: "Name", key: "name", width: 15 },
+    //   { header: "Age", key: "age", width: 10 },
+    //   // Add more columns as needed
+    // ];
 
-    const data = [
-      { name: "John", age: 30 },
-      { name: "Jane", age: 25 },
-      // Add more rows as needed
-    ];
+    // const data = [
+    //   { name: "John", age: 30 },
+    //   { name: "Jane", age: 25 },
+    //   // Add more rows as needed
+    // ];
 
-    data.forEach((row) => {
-      worksheet.addRow(row);
-    });
+    // data.forEach((row) => {
+    //   worksheet.addRow(row);
+    // });
 
-    const buffer = await workbook.xlsx.writeBuffer();
-    const blob = new Blob([buffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "data.xlsx";
-    a.click();
+    // const buffer = await workbook.xlsx.writeBuffer();
+    // const blob = new Blob([buffer], {
+    //   type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    // });
+    // const url = URL.createObjectURL(blob);
+    // const a = document.createElement("a");
+    // a.href = url;
+    // a.download = "data.xlsx";
+    // a.click();
 
-    URL.revokeObjectURL(url);
+    // URL.revokeObjectURL(url);
   }, []);
 
   const { fields, append, remove } = useFieldArray({
@@ -151,7 +184,17 @@ export default function CalculatorScreen() {
                   name={sharedFormValue.name}
                   control={control}
                   render={({ field }) => {
-                    return (
+                    if (!field.value && sharedFormValue.type === "select") {
+                      field.onChange(windZoneSelectOptions[0].value);
+                    }
+                    return sharedFormValue.type === "select" ? (
+                      <Select
+                        options={windZoneSelectOptions}
+                        value={field.value}
+                        onChange={field.onChange}
+                        className="w-full"
+                      />
+                    ) : (
                       <Input
                         value={field.value}
                         onChange={field.onChange}
