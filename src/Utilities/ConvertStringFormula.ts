@@ -1,4 +1,4 @@
-import { SHARED_VARIABLES } from "../Consts/SharedVariables";
+import { ALL_VARIABLES } from "../Consts/SharedVariables";
 
 export const convertStringToFormula = (
   formula: string,
@@ -17,7 +17,7 @@ export const convertStringToFormula = (
     paramList.push("win" + k);
   }
   return new Function(
-    [...paramList, ...SHARED_VARIABLES].join(","),
+    [...paramList, ...ALL_VARIABLES].join(","),
     `return (${formula});`
   );
 };

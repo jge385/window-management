@@ -19,18 +19,33 @@ import {
 } from "../Utilities/ConvertStringFormula";
 import {
   WINDOW_STATUS_LABEL_MAP,
-  WindowStatusLabelMap,
-} from "../Consts/WindowStatusMap";
-import { SHARED_VARIABLES } from "../Consts/SharedVariables";
+  WINDOW_THICKNESS_LABEL_MAP,
+  WindowLabelMap,
+} from "../Consts/WindowOptionLabelMap";
+import {
+  SHARED_WINDOW_STATUS_VARIABLES,
+  SHARED_WINDOW_THICKNESS_VARIABLES,
+} from "../Consts/SharedVariables";
 
 const { Text } = Typography;
 
-const windowStatusSelectOptions = SHARED_VARIABLES.map((variable) => {
-  return {
-    value: variable,
-    label: WINDOW_STATUS_LABEL_MAP[variable as keyof WindowStatusLabelMap],
-  };
-});
+const windowStatusSelectOptions = SHARED_WINDOW_STATUS_VARIABLES.map(
+  (variable) => {
+    return {
+      value: variable,
+      label: WINDOW_STATUS_LABEL_MAP[variable as keyof WindowLabelMap],
+    };
+  }
+);
+
+const windowThicknessSelectOptions = SHARED_WINDOW_THICKNESS_VARIABLES.map(
+  (variable) => {
+    return {
+      value: variable,
+      label: WINDOW_THICKNESS_LABEL_MAP[variable as keyof WindowLabelMap],
+    };
+  }
+);
 
 export interface FormValueItem {
   name: string;
@@ -226,6 +241,7 @@ export default function WindowTypesRow({
           }}
         />
       </div>
+      {/* height & width */}
       {windowInfoFormValues.map((row: FormValueItem) => {
         return (
           <div key={row.name + index}>
@@ -246,6 +262,29 @@ export default function WindowTypesRow({
           </div>
         );
       })}
+      <div>
+        <div className="w-full">
+          <Text> Thickness </Text>
+        </div>
+        <Controller
+          name={`window.${index}.thickness`}
+          control={control}
+          render={({ field }) => {
+            if (!field.value) {
+              field.onChange(windowThicknessSelectOptions[0].value);
+            }
+            return (
+              <Select
+                options={windowThicknessSelectOptions}
+                value={field.value}
+                onChange={field.onChange}
+                className="w-full"
+              />
+            );
+          }}
+        />
+      </div>
+      {/* h1, w1 */}
       {windowDetailFormValues.map((row: FormValueItem) => {
         return (
           <div key={row.name + index}>

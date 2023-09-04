@@ -41,13 +41,33 @@ const SharedFormValues = [
     type: "number",
   },
   {
+    name: "slidingDoorCost",
+    label: "Sliding Door cost",
+    type: "number",
+  },
+  {
+    name: "JHLinea",
+    label: "JH linea",
+    type: "number",
+  },
+  {
+    name: "JHOblique",
+    label: "JH oblique",
+    type: "number",
+  },
+  {
+    name: "brick",
+    label: "brick veneer",
+    type: "number",
+  },
+  {
     name: "glassPrice",
     label: "Glass Price",
     type: "number",
   },
   {
-    name: "revel",
-    label: "Revel",
+    name: "acessoriesPrice",
+    label: "Acessories Price",
     type: "number",
   },
 ];
