@@ -168,7 +168,9 @@ export default function WindowTypesRow({
     for (let i = 1; i <= selectedWindowTypeOption.HeightCount; i++) {
       setValue(
         `window.${index}.h${i}`,
-        rowData.window[index].height / selectedWindowTypeOption.HeightCount
+        (
+          rowData.window[index].height / selectedWindowTypeOption.HeightCount
+        ).toFixed(3)
       );
     }
   }, [rowData.window[index].height]);
@@ -177,7 +179,9 @@ export default function WindowTypesRow({
     for (let i = 1; i <= selectedWindowTypeOption.WidthCount; i++) {
       setValue(
         `window.${index}.w${i}`,
-        rowData.window[index].width / selectedWindowTypeOption.WidthCount
+        (
+          rowData.window[index].width / selectedWindowTypeOption.WidthCount
+        ).toFixed(3)
       );
     }
   }, [rowData.window[index].width]);
@@ -231,7 +235,13 @@ export default function WindowTypesRow({
             if (windowId !== field.value) {
               field.onChange(windowId);
             }
-            return <Input value={field.value} onChange={field.onChange} />;
+            return (
+              <Input
+                value={field.value}
+                onChange={field.onChange}
+                disabled={true}
+              />
+            );
           }}
         />
       </div>
@@ -299,6 +309,7 @@ export default function WindowTypesRow({
           </div>
         );
       })}
+      {/* thickness */}
       <div>
         <div className="w-full">
           <Text> Thickness </Text>
@@ -342,6 +353,7 @@ export default function WindowTypesRow({
           </div>
         );
       })}
+      {/* win1, win2 */}
       {windowStatusFormValues.map((row: FormValueItem) => {
         return (
           <div key={row.name + index}>
@@ -368,6 +380,31 @@ export default function WindowTypesRow({
           </div>
         );
       })}
+      {/* area */}
+      <div>
+        <Text> Area in m^2 </Text>
+        <Controller
+          name={`window.${index}.area`}
+          control={control}
+          render={({ field }) => {
+            const area =
+              (rowData.window[index].height * rowData.window[index].width) /
+              1000000;
+            if (area && field.value !== area) {
+              field.onChange(area);
+            }
+            return (
+              <Input
+                value={field.value}
+                onChange={field.onChange}
+                type="number"
+                disabled={true}
+              />
+            );
+          }}
+        />
+      </div>
+      {/* Al Prices etc */}
       {calculatedFormValues.map((row: FormValueItem) => {
         const realFormula = convertStringToFormula(
           selectedWindowTypeOption[row.name as keyof WindowTypeExcel] as string,
