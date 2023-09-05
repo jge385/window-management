@@ -25,6 +25,7 @@ import {
 import {
   SHARED_WINDOW_STATUS_VARIABLES,
   SHARED_WINDOW_THICKNESS_VARIABLES,
+  SHARED_WINDOW_STATUS_VARIABLES_AB_MAP,
 } from "../Consts/SharedVariables";
 
 const { Text } = Typography;
@@ -419,7 +420,7 @@ export default function WindowTypesRow({
               ? containWin(variable) // use this to separate the logic for h1,w1 and win1 because h1 is number while win1 points to shared variable
                 ? rowData[rowData.window[index][variable]]
                 : rowData.window[index][variable]
-              : rowData[variable]
+              : rowData[SHARED_WINDOW_STATUS_VARIABLES_AB_MAP[variable]]
           );
         });
         const result = realFormula(...params);

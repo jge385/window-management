@@ -56,6 +56,26 @@ const SharedFormValues = [
     type: "number",
   },
   {
+    name: "slidingTwoFixedCost",
+    label: "Sliding Two Fixed cost",
+    type: "number",
+  },
+  {
+    name: "slidingTwoAwningCost",
+    label: "Sliding Two Awning cost",
+    type: "number",
+  },
+  {
+    name: "slidingTwoDoorCost",
+    label: "Sliding Two Door cost",
+    type: "number",
+  },
+  {
+    name: "doorCost",
+    label: "Door cost",
+    type: "number",
+  },
+  {
     name: "JHLinea",
     label: "JH linea",
     type: "number",
@@ -130,36 +150,6 @@ export default function CalculatorScreen() {
     console.log("submit data ", data);
 
     ExportExcel(data);
-    // const workbook = new ExcelJS.Workbook();
-    // const worksheet = workbook.addWorksheet("Sheet 1");
-
-    // worksheet.columns = [
-    //   { header: "Name", key: "name", width: 15 },
-    //   { header: "Age", key: "age", width: 10 },
-    //   // Add more columns as needed
-    // ];
-
-    // const data = [
-    //   { name: "John", age: 30 },
-    //   { name: "Jane", age: 25 },
-    //   // Add more rows as needed
-    // ];
-
-    // data.forEach((row) => {
-    //   worksheet.addRow(row);
-    // });
-
-    // const buffer = await workbook.xlsx.writeBuffer();
-    // const blob = new Blob([buffer], {
-    //   type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    // });
-    // const url = URL.createObjectURL(blob);
-    // const a = document.createElement("a");
-    // a.href = url;
-    // a.download = "data.xlsx";
-    // a.click();
-
-    // URL.revokeObjectURL(url);
   }, []);
 
   const { fields, append, remove } = useFieldArray({

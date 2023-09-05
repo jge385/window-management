@@ -22,8 +22,8 @@ const columns: ColumnsType<WindowTypeExcel> = [
     dataIndex: "WindowCount",
   },
   {
-    title: "Aluminium Price Formula",
-    dataIndex: "AluminiumPriceFormula",
+    title: "Aluminium Formula",
+    dataIndex: "AluminiumFormula",
   },
   {
     title: "Glass Formula",
