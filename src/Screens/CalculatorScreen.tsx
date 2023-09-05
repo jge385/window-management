@@ -11,6 +11,8 @@ import {
 import WindowTypesRow from "../Components/WindowTypesRow";
 import { useNavigate } from "react-router-dom";
 import { ExportExcel } from "../Components/ExportExcel";
+import { useStoredData } from "../Context/StoredDataProvider";
+import { ExportJson } from "../Components/ExportJson";
 
 const { Title, Text } = Typography;
 
@@ -130,15 +132,18 @@ const windZoneSelectOptions = [
 ];
 
 export default function CalculatorScreen() {
+  const { storedData } = useStoredData();
   const {
     control,
     handleSubmit,
     formState: { errors },
     setValue,
   } = useForm<any>({
-    defaultValues: {},
+    defaultValues: storedData || {},
     mode: "onBlur",
   });
+
+  const formData = useWatch({ control });
 
   const navigate = useNavigate();
 
@@ -157,7 +162,9 @@ export default function CalculatorScreen() {
     control,
   });
 
-  console.log("fields ", fields);
+  const onSaveDraft = useCallback(() => {
+    ExportJson(formData);
+  }, [formData]);
 
   return (
     <div className="p-3">
@@ -222,10 +229,12 @@ export default function CalculatorScreen() {
           >
             Add a window
           </Button>
-          {/* <Button onClick={() => append({ count: 1 })}>Add a window</Button> */}
           <div className="flex space-x-3">
-            <Button onClick={onCancel}>Cancel</Button>
-            <Button htmlType="submit">Submit</Button>
+            <Button onClick={onCancel}>Cancel</Button>{" "}
+            <Button htmlType="button" onClick={onSaveDraft}>
+              Save draft
+            </Button>
+            <Button htmlType="submit">Export final excel</Button>
           </div>
         </div>
       </form>

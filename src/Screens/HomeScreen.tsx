@@ -4,6 +4,7 @@ import { Button, Typography } from "antd";
 import { useWindowTypeExcel } from "../Context/WindowTypeExcelProvider";
 import WindowTypesTable from "../Components/WindowTypesTable";
 import { useNavigate } from "react-router-dom";
+import { ReadJson } from "../Components/ReadJson";
 
 const { Title } = Typography;
 
@@ -29,6 +30,7 @@ export default function HomeScreen() {
           New Project
         </Button>
         <ReadExcel />
+        <ReadJson />
       </div>
       <WindowTypesTable />
     </div>

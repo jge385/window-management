@@ -5,13 +5,16 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import WindowTypeExcelProvider from "./Context/WindowTypeExcelProvider";
+import StoredDataProvider from "./Context/StoredDataProvider";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <WindowTypeExcelProvider>
-        <App />
+        <StoredDataProvider>
+          <App />
+        </StoredDataProvider>
       </WindowTypeExcelProvider>
     </BrowserRouter>
   </React.StrictMode>
