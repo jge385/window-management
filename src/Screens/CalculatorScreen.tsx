@@ -140,7 +140,7 @@ export default function CalculatorScreen() {
     setValue,
   } = useForm<any>({
     defaultValues: storedData || {},
-    mode: "onBlur",
+    mode: "onChange",
   });
 
   const formData = useWatch({ control });

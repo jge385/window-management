@@ -52,6 +52,7 @@ export interface FormValueItem {
   name: string;
   label: string;
   type?: string;
+  validate?: (value: string) => boolean;
 }
 
 const houseInfoFormValues = [
@@ -135,6 +136,34 @@ export default function WindowTypesRow({
     setSelectedWindowTypeOption(option!);
   }, []);
 
+  const validateHeight = useCallback((value: string) => {
+    if (rowData.window[index]?.height) {
+      let heightSum = 0;
+      for (let i = 1; i <= selectedWindowTypeOption.HeightCount; i++) {
+        heightSum += rowData.window[index]["h" + i];
+      }
+      return (
+        Math.round(Number(heightSum.toFixed(3))) ===
+        Math.round(rowData.window[index].height)
+      );
+    }
+    return true;
+  }, []);
+
+  const validateWidth = useCallback((value: string) => {
+    if (rowData.window[index]?.width) {
+      let widthSum = 0;
+      for (let i = 1; i <= selectedWindowTypeOption.WidthCount; i++) {
+        widthSum += rowData.window[index]["w" + i];
+      }
+      return (
+        Math.round(Number(widthSum.toFixed(3))) ===
+        Math.round(rowData.window[index].width)
+      );
+    }
+    return true;
+  }, []);
+
   const windowDetailFormValues = useMemo(() => {
     const rowProperties = [];
     for (let i = 1; i <= selectedWindowTypeOption.HeightCount; i++) {
@@ -142,10 +171,16 @@ export default function WindowTypesRow({
         name: "h" + i,
         label: "h" + i,
         type: "number",
+        validate: validateHeight,
       });
     }
     for (let i = 1; i <= selectedWindowTypeOption.WidthCount; i++) {
-      rowProperties.push({ name: "w" + i, label: "w" + i, type: "number" });
+      rowProperties.push({
+        name: "w" + i,
+        label: "w" + i,
+        type: "number",
+        validate: validateWidth,
+      });
     }
     return rowProperties;
   }, [selectedWindowTypeOption]);
@@ -169,9 +204,11 @@ export default function WindowTypesRow({
     for (let i = 1; i <= selectedWindowTypeOption.HeightCount; i++) {
       setValue(
         `window.${index}.h${i}`,
-        (
-          rowData.window[index].height / selectedWindowTypeOption.HeightCount
-        ).toFixed(3)
+        Number(
+          (
+            rowData.window[index].height / selectedWindowTypeOption.HeightCount
+          ).toFixed(3)
+        )
       );
     }
   }, [rowData.window[index].height]);
@@ -180,9 +217,11 @@ export default function WindowTypesRow({
     for (let i = 1; i <= selectedWindowTypeOption.WidthCount; i++) {
       setValue(
         `window.${index}.w${i}`,
-        (
-          rowData.window[index].width / selectedWindowTypeOption.WidthCount
-        ).toFixed(3)
+        Number(
+          (
+            rowData.window[index].width / selectedWindowTypeOption.WidthCount
+          ).toFixed(3)
+        )
       );
     }
   }, [rowData.window[index].width]);
@@ -301,7 +340,9 @@ export default function WindowTypesRow({
                 return (
                   <Input
                     value={field.value}
-                    onChange={field.onChange}
+                    onChange={(e: any) => {
+                      field.onChange(Number(e.target.value));
+                    }}
                     type={row.type}
                   />
                 );
@@ -341,12 +382,18 @@ export default function WindowTypesRow({
             <Controller
               name={`window.${index}.${row.name}`}
               control={control}
-              render={({ field }) => {
+              rules={{ validate: (value: string) => row.validate!(value) }}
+              render={({ field, fieldState }) => {
                 return (
                   <Input
                     value={field.value}
-                    onChange={field.onChange}
+                    onChange={(e: any) => {
+                      field.onChange(Number(e.target.value));
+                    }}
                     type={row.type}
+                    status={
+                      fieldState.error !== undefined ? "error" : undefined
+                    }
                   />
                 );
               }}
@@ -452,6 +499,7 @@ export default function WindowTypesRow({
           </div>
         );
       })}
+      {/* count */}
       <div>
         <Text> Count </Text>
         <Controller
@@ -468,6 +516,7 @@ export default function WindowTypesRow({
           }}
         />
       </div>
+      {/* cost */}
       <div>
         <Text> Cost </Text>
         <Controller

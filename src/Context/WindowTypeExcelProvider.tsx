@@ -19,7 +19,7 @@ export interface WindowTypeExcel {
 const MOCK_INITIAL_WINDOW_TYPES = [
   {
     TypeName: "Test window 1",
-    HeightCount: 1,
+    HeightCount: 3,
     WidthCount: 3,
     WindowCount: 3,
     AluminiumFormula: "(w1+h1) * win1 + STFC",
