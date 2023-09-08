@@ -81,7 +81,7 @@ const windowInfoFormValues = [
   },
 ];
 
-const calculatedFormValues = [
+const priceFormValues = [
   {
     name: "AluminiumFormula",
     label: "Aluminium Price",
@@ -99,9 +99,7 @@ const calculatedFormValues = [
   },
 ];
 
-const calculatedFormValueNames = calculatedFormValues.map(
-  (formValue) => formValue.name
-);
+const priceFormValueNames = priceFormValues.map((formValue) => formValue.name);
 
 export default function WindowTypesRow({
   control,
@@ -435,10 +433,13 @@ export default function WindowTypesRow({
           name={`window.${index}.area`}
           control={control}
           render={({ field }) => {
-            const area =
-              (rowData.window[index].height * rowData.window[index].width) /
-              1000000;
-            if (area && field.value !== area) {
+            const area = Number(
+              (
+                (rowData.window[index].height * rowData.window[index].width) /
+                1000000
+              ).toFixed(2)
+            );
+            if (!Number.isNaN(area) && field.value !== area) {
               field.onChange(area);
             }
             return (
@@ -453,7 +454,7 @@ export default function WindowTypesRow({
         />
       </div>
       {/* Al Prices etc */}
-      {calculatedFormValues.map((row: FormValueItem) => {
+      {priceFormValues.map((row: FormValueItem) => {
         const realFormula = convertStringToFormula(
           selectedWindowTypeOption[row.name as keyof WindowTypeExcel] as string,
           selectedWindowTypeOption.WidthCount,
@@ -478,7 +479,7 @@ export default function WindowTypesRow({
               name={`window.${index}.${row.name}`}
               control={control}
               render={({ field }) => {
-                if (result && field.value !== result) {
+                if (!Number.isNaN(result) && field.value !== result) {
                   field.onChange(result);
                 }
                 return (
@@ -523,14 +524,16 @@ export default function WindowTypesRow({
           name={`window.${index}.rowCost`}
           control={control}
           render={({ field }) => {
-            const rowPriceSum = calculatedFormValueNames.reduce(
+            const rowPriceSum = priceFormValueNames.reduce(
               (accumulator, currentValue) => {
                 return accumulator + rowData.window[index][currentValue];
               },
               0
             );
-            const rowTotalCost = rowData.window[index].count * rowPriceSum;
-            if (rowTotalCost && field.value !== rowTotalCost) {
+            const rowTotalCost = Number(
+              (rowData.window[index].count * rowPriceSum).toFixed(2)
+            );
+            if (!Number.isNaN(rowTotalCost) && field.value !== rowTotalCost) {
               field.onChange(rowTotalCost);
             }
             return (
