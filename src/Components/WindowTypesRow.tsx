@@ -12,11 +12,14 @@ import {
   UseFormSetValue,
 } from "react-hook-form";
 import {
-  convertStringToFormula,
+  convertPriceStringToFormula,
+  convertCalculateStringToFormula,
   extractFunctionParams,
   containDigit,
   containWin,
-} from "../Utilities/ConvertStringFormula";
+  isWindowBasedField,
+  findClosestSmallNumber,
+} from "../Utilities/GenerateFormula";
 import {
   WINDOW_STATUS_LABEL_MAP,
   WINDOW_THICKNESS_LABEL_MAP,
@@ -27,6 +30,7 @@ import {
   SHARED_WINDOW_THICKNESS_VARIABLES,
   SHARED_WINDOW_STATUS_VARIABLES_AB_MAP,
 } from "../Consts/SharedVariables";
+import { ALUMINIUM_NUMBER_MAP } from "../Consts/ExportCalculateMap";
 
 const { Text } = Typography;
 
@@ -55,6 +59,18 @@ export interface FormValueItem {
   validate?: (value: string) => boolean;
 }
 
+export interface CalculateFormValueItem extends FormValueItem {
+  condition: boolean;
+  conditionVariable?: string;
+  conditionFormulaMap?: { [key: string]: string };
+  formula?: string;
+}
+
+export interface compareFormValues extends FormValueItem {
+  range: number[];
+  variable: string;
+}
+
 const houseInfoFormValues = [
   {
     name: "lot",
@@ -78,6 +94,75 @@ const windowInfoFormValues = [
     name: "width",
     label: "Width",
     type: "number",
+  },
+];
+
+const calculatedFormValues: CalculateFormValueItem[] = [
+  {
+    name: "revelWidth",
+    label: "Revel Width",
+    condition: true,
+    conditionVariable: "thickness",
+    conditionFormulaMap: {
+      JHLinea: "JHLinea - Alu2",
+      JHOblique: "JHOblique - Alu2",
+      brick: "brick - 10 - Alu1",
+    },
+  },
+  {
+    name: "revelLength",
+    label: "Revel Length",
+    condition: false,
+    formula: "(height + width) * 2 * 1.5",
+  },
+  {
+    name: "flashingWidthRequired",
+    label: "Flashing Width Required",
+    condition: true,
+    conditionVariable: "thickness",
+    conditionFormulaMap: {
+      JHLinea: "Alu1 + revelWidth - Alu4 - 100",
+      JHOblique: "Alu1 + revelWidth - Alu4 - 100",
+      brick: "brick - 10 - Alu4 - 100",
+    },
+  },
+  {
+    name: "flashingLength",
+    label: "Flashing Length",
+    condition: false,
+    formula: "width + 150",
+  },
+  {
+    name: "supportingBarWidthRequired",
+    label: "Supporting Bar Width",
+    condition: true,
+    conditionVariable: "thickness",
+    conditionFormulaMap: {
+      JHLinea: "JHLinea - 100",
+      JHOblique: "JHOblique - 100",
+      brick: "brick - 10 - 100 - Alu3",
+    },
+  },
+  {
+    name: "supportingBarLength",
+    label: "Supporting Bar Length",
+    condition: false,
+    formula: "width - 100",
+  },
+];
+
+const compareFormValues: compareFormValues[] = [
+  {
+    name: "flashingWidth",
+    label: "Flashing Width",
+    range: [55, 75, 100, 120],
+    variable: "flashingWidthRequired",
+  },
+  {
+    name: "flashingWidth",
+    label: "Flashing Width",
+    range: [30, 40, 60],
+    variable: "supportingBarWidthRequired",
   },
 ];
 
@@ -426,6 +511,92 @@ export default function WindowTypesRow({
           </div>
         );
       })}
+      {/* revel width required etc*/}
+      {calculatedFormValues.map((row: CalculateFormValueItem) => {
+        const realFormula = convertCalculateStringToFormula(
+          row.condition
+            ? row.conditionFormulaMap![
+                rowData.window[index][row.conditionVariable!]
+              ]
+            : row.formula!
+        );
+        const variables = extractFunctionParams(realFormula);
+        const params = variables.map((variable: string) => {
+          return Number(
+            containDigit(variable) // use this to check if the variable is inside window object (eg h1,w1, win1) or total object (eg fixedCost)
+              ? ALUMINIUM_NUMBER_MAP[variable][rowData.window[index].win1]
+              : isWindowBasedField(variable)
+              ? rowData.window[index][variable]
+              : rowData[variable]
+          );
+        });
+        const result = realFormula(...params);
+        return (
+          <div key={row.name + index}>
+            <Text> {row.label} </Text>
+            <Controller
+              name={`window.${index}.${row.name}`}
+              control={control}
+              render={({ field }) => {
+                if (!Number.isNaN(result) && field.value !== result) {
+                  field.onChange(result);
+                }
+                return (
+                  <Input
+                    value={result || field.value}
+                    onChange={(e: any) => {
+                      field.onChange(Number(e.target.value));
+                    }}
+                    type="number"
+                    disabled={true}
+                    placeholder={
+                      row.condition
+                        ? row.conditionFormulaMap![
+                            rowData.window[index][row.conditionVariable!]
+                          ]
+                        : row.formula!
+                    }
+                  />
+                );
+              }}
+            />
+          </div>
+        );
+      })}
+      {/* revel width */}
+      {compareFormValues.map((row: compareFormValues) => {
+        let result: null | number;
+        if (rowData.window[index][row.variable]) {
+          result = findClosestSmallNumber(
+            row.range,
+            rowData.window[index][row.variable]
+          );
+        }
+        return (
+          <div key={row.name + index}>
+            <Text> {row.label} </Text>
+            <Controller
+              name={`window.${index}.${row.name}`}
+              control={control}
+              render={({ field }) => {
+                if (!result && field.value !== result) {
+                  field.onChange(result);
+                }
+                return (
+                  <Input
+                    value={result || field.value}
+                    onChange={(e: any) => {
+                      field.onChange(Number(e.target.value));
+                    }}
+                    type="number"
+                    disabled={true}
+                  />
+                );
+              }}
+            />
+          </div>
+        );
+      })}
       {/* area */}
       <div>
         <Text> Area in m^2 </Text>
@@ -455,7 +626,7 @@ export default function WindowTypesRow({
       </div>
       {/* Al Prices etc */}
       {priceFormValues.map((row: FormValueItem) => {
-        const realFormula = convertStringToFormula(
+        const realFormula = convertPriceStringToFormula(
           selectedWindowTypeOption[row.name as keyof WindowTypeExcel] as string,
           selectedWindowTypeOption.WidthCount,
           selectedWindowTypeOption.HeightCount,
@@ -548,7 +719,9 @@ export default function WindowTypesRow({
           }}
         />
       </div>
-      <Button onClick={onRemoveRow}> Remove </Button>
+      <div className="mt-3">
+        <Button onClick={onRemoveRow}> Remove </Button>
+      </div>
     </div>
   );
 }

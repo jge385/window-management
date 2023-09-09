@@ -44,7 +44,4 @@ export const SHARED_WINDOW_THICKNESS_VARIABLES = [
   "brick",
 ];
 
-export const ALL_VARIABLES = [
-  ...SHARED_WINDOW_STATUS_VARIABLES_AB,
-  ...SHARED_WINDOW_THICKNESS_VARIABLES,
-];
+export const ALUMINIUM_VARIABLES = ["Alu1", "Alu2", "Alu3", "Alu4"];
