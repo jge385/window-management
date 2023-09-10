@@ -159,8 +159,8 @@ const compareFormValues: compareFormValues[] = [
     variable: "flashingWidthRequired",
   },
   {
-    name: "flashingWidth",
-    label: "Flashing Width",
+    name: "supportingBarWidth",
+    label: "Supporting Bar Width",
     range: [30, 40, 60],
     variable: "supportingBarWidthRequired",
   },
@@ -579,7 +579,7 @@ export default function WindowTypesRow({
               name={`window.${index}.${row.name}`}
               control={control}
               render={({ field }) => {
-                if (!result && field.value !== result) {
+                if (!Number.isNaN(result) && field.value !== result) {
                   field.onChange(result);
                 }
                 return (
