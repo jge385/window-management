@@ -38,8 +38,8 @@ export async function ExportExcel(formData: any) {
       column4: formData.windZone,
     });
     exportWindowData.push({
-      column3: "Revel Usage (m)",
-      column4: (Number(window.height) * Number(window.width) * 1.5) / 1000000,
+      column3: "Revel Length",
+      column4: Number(window.revelLength),
     });
     exportWindowData.push({
       column3: "Revel Width (mm)",
@@ -80,6 +80,10 @@ export async function ExportExcel(formData: any) {
     exportWindowData.push({
       column3: "Trim Size",
       column4: "(height + 20) X (width + 20)",
+    });
+    exportWindowData.push({
+      column3: "Water Box (mm)",
+      column4: Number(window.width) + 20,
     });
     exportWindowData.push({});
   });
