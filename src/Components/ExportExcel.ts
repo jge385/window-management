@@ -117,3 +117,71 @@ export async function ExportExcel(formData: any) {
 
   URL.revokeObjectURL(url);
 }
+
+export async function ExportInternalExcel(formData: any) {
+  console.log("formData ", formData);
+
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("Sheet 1");
+
+  const windows = formData.window;
+  const exportWindowData: any[] = [];
+
+  worksheet.columns = [
+    { key: "revelLength", width: 20, header: "Revel Length" },
+    { key: "revelWidth", width: 20, header: "Revel Width" },
+    { key: "flashingLength", width: 20, header: "Flashing Length" },
+    { key: "flashingWidth55", width: 20, header: "Flashing Width 55" },
+    { key: "flashingWidth75", width: 20, header: "Flashing Width 75" },
+    { key: "flashingWidth100", width: 20, header: "Flashing Width 100" },
+    { key: "flashingWidth120", width: 20, header: "Flashing Width 120" },
+    { key: "supportingBarLength", width: 20, header: "Supporting Bar Length" },
+    {
+      key: "supportingBarWidth30",
+      width: 20,
+      header: "Supporting Bar Width 30",
+    },
+    {
+      key: "supportingBarWidth40",
+      width: 20,
+      header: "Supporting Bar Width 40",
+    },
+    {
+      key: "supportingBarWidth60",
+      width: 20,
+      header: "Supporting Bar Width 60",
+    },
+  ];
+
+  windows.forEach((window: any) => {
+    exportWindowData.push({
+      revelLength: window.revelLength,
+      revelWidth: window.revelWidth,
+      flashingLength: window.flashingLength,
+      flashingWidth55: window.flashingWidth == 55 ? 55 : 0,
+      flashingWidth75: window.flashingWidth == 75 ? 75 : 0,
+      flashingWidth100: window.flashingWidth == 100 ? 100 : 0,
+      flashingWidth120: window.flashingWidth == 120 ? 120 : 0,
+      supportingBarLength: window.supportingBarLength,
+      supportingBarWidth30: window.supportingBarWidth == 30 ? 30 : 0,
+      supportingBarWidth40: window.supportingBarWidth == 40 ? 40 : 0,
+      supportingBarWidth60: window.supportingBarWidth == 60 ? 60 : 0,
+    });
+  });
+
+  exportWindowData.forEach((row) => {
+    worksheet.addRow(row);
+  });
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "internal data.xlsx";
+  a.click();
+
+  URL.revokeObjectURL(url);
+}

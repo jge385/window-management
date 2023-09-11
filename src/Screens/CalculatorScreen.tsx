@@ -10,7 +10,7 @@ import {
 } from "react-hook-form";
 import WindowTypesRow from "../Components/WindowTypesRow";
 import { useNavigate } from "react-router-dom";
-import { ExportExcel } from "../Components/ExportExcel";
+import { ExportExcel, ExportInternalExcel } from "../Components/ExportExcel";
 import { useStoredData } from "../Context/StoredDataProvider";
 import { ExportJson } from "../Components/ExportJson";
 
@@ -140,6 +140,10 @@ export default function CalculatorScreen() {
     ExportJson(formData);
   }, [formData]);
 
+  const onExportInternalExcel = useCallback(() => {
+    ExportInternalExcel(formData);
+  }, [formData]);
+
   return (
     <div className="p-3">
       <div className="flex justify-center mb-5">
@@ -207,6 +211,9 @@ export default function CalculatorScreen() {
             <Button onClick={onCancel}>Cancel</Button>{" "}
             <Button htmlType="button" onClick={onSaveDraft}>
               Save draft
+            </Button>
+            <Button htmlType="button" onClick={onExportInternalExcel}>
+              Export internal excel
             </Button>
             <Button htmlType="submit">Export final excel</Button>
           </div>
