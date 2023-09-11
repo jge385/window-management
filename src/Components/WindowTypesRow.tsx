@@ -314,6 +314,19 @@ export default function WindowTypesRow({
     }
   }, []);
 
+  const resetWindowSuffix = useCallback(() => {
+    if (index == 0) {
+      return 1;
+    }
+    if (
+      rowData.window[index].lot == rowData.window[index - 1].lot &&
+      rowData.window[index].floor == rowData.window[index - 1].floor
+    ) {
+      return Number(rowData.window[index - 1].id.split("-")[3].trim()) + 1;
+    }
+    return 1;
+  }, []);
+
   return (
     <div className="w-full grid grid-cols-8 items-center space-x-2">
       {/* lot, floor */}
@@ -346,9 +359,9 @@ export default function WindowTypesRow({
           name={`window.${index}.id`}
           control={control}
           render={({ field }) => {
-            const windowId = `${rowData.projectName || "no project name"} - ${
+            const windowId = `${rowData.projectName || "no"} - ${
               rowData.window[index].lot
-            } - ${rowData.window[index].floor} - ${index + 1}`;
+            } - ${rowData.window[index].floor} - ${resetWindowSuffix()}`;
             if (windowId !== field.value) {
               field.onChange(windowId);
             }
