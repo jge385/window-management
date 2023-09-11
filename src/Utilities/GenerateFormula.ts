@@ -66,14 +66,17 @@ export const isWindowBasedField = (value: string) => {
 };
 
 export const findClosestSmallNumber = (range: number[], target: number) => {
-  let closest = null;
+  let closest = range[0];
   for (let i = 0; i < range.length; i++) {
-    if (range[i] <= target) {
-      if (
-        closest === null ||
-        Math.abs(target - range[i]) < Math.abs(target - closest)
-      ) {
+    if (range[i] < target) {
+      if (Math.abs(target - range[i]) < Math.abs(target - closest)) {
         closest = range[i];
+      }
+    } else if (range[i] == target) {
+      if (i == range.length - 1) {
+        closest = range[i];
+      } else {
+        closest = range[i + 1];
       }
     }
   }

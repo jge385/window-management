@@ -563,7 +563,7 @@ export default function WindowTypesRow({
           </div>
         );
       })}
-      {/* revel width */}
+      {/* revel width, supporting bar width */}
       {compareFormValues.map((row: compareFormValues) => {
         let result: null | number;
         if (rowData.window[index][row.variable]) {
