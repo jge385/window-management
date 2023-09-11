@@ -5,12 +5,8 @@ export interface WindowLabelMap {
 export const WINDOW_STATUS_LABEL_MAP: WindowLabelMap = {
   fixedCost: "Fixed",
   awningCost: "Awning",
-  slidingFixedCost: "Sliding Fixed",
-  slidingAwningCost: "Sliding Awning",
-  slidingDoorCost: "Sliding Door",
-  slidingTwoFixedCost: "Sliding Two Fixed",
-  slidingTwoAwningCost: "Sliding Two Awning",
-  slidingTwoDoorCost: "Sliding Two Door",
+  slidingCost: "Sliding",
+  slidingTwoCost: "Sliding Two",
   doorCost: "Door",
 };
 

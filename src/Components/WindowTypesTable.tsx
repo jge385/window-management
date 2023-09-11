@@ -25,14 +25,6 @@ const columns: ColumnsType<WindowTypeExcel> = [
     title: "Aluminium Formula",
     dataIndex: "AluminiumFormula",
   },
-  {
-    title: "Glass Formula",
-    dataIndex: "GlassFormula",
-  },
-  {
-    title: "Acessories Formula",
-    dataIndex: "AcessoriesFormula",
-  },
 ];
 
 export default function WindowTypesTable() {

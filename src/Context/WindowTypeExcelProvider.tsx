@@ -12,8 +12,6 @@ export interface WindowTypeExcel {
   WidthCount: number;
   WindowCount: number;
   AluminiumFormula: string;
-  GlassFormula: string;
-  AcessoriesFormula: string;
 }
 
 const MOCK_INITIAL_WINDOW_TYPES = [
@@ -23,8 +21,6 @@ const MOCK_INITIAL_WINDOW_TYPES = [
     WidthCount: 3,
     WindowCount: 3,
     AluminiumFormula: "(w1+h1) * win1 + 1",
-    GlassFormula: "(w2+h1) * 2",
-    AcessoriesFormula: "(w3+h1) * 1",
   },
   {
     TypeName: "Test window 2",
@@ -32,8 +28,6 @@ const MOCK_INITIAL_WINDOW_TYPES = [
     WidthCount: 4,
     WindowCount: 3,
     AluminiumFormula: "(w1+h1) * 1",
-    GlassFormula: "(w2+h1) * 2",
-    AcessoriesFormula: "(w3+h1) * 3",
   },
 ];
 

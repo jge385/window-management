@@ -43,33 +43,13 @@ const SharedFormValues = [
     type: "number",
   },
   {
-    name: "slidingFixedCost",
-    label: "Sliding Fixed Cost",
+    name: "slidingCost",
+    label: "Sliding Cost",
     type: "number",
   },
   {
-    name: "slidingAwningCost",
-    label: "Sliding Awning Cost",
-    type: "number",
-  },
-  {
-    name: "slidingDoorCost",
-    label: "Sliding Door cost",
-    type: "number",
-  },
-  {
-    name: "slidingTwoFixedCost",
-    label: "Sliding Two Fixed cost",
-    type: "number",
-  },
-  {
-    name: "slidingTwoAwningCost",
-    label: "Sliding Two Awning cost",
-    type: "number",
-  },
-  {
-    name: "slidingTwoDoorCost",
-    label: "Sliding Two Door cost",
+    name: "slidingTwoCost",
+    label: "Sliding Two Cost",
     type: "number",
   },
   {
@@ -92,16 +72,10 @@ const SharedFormValues = [
     label: "brick veneer",
     type: "number",
   },
-  {
-    name: "glassPrice",
-    label: "Glass Price",
-    type: "number",
-  },
-  {
-    name: "acessoriesPrice",
-    label: "Acessories Price",
-    type: "number",
-  },
+  { name: "revelCost", label: "Revel Cost", type: "number" },
+  { name: "flashingCost", label: "Flashing Cost", type: "number" },
+  { name: "supportingBarCost", label: "Supporting Bar Cost", type: "number" },
+  { name: "waterBoxCost", label: "Water Box Cost", type: "number" },
 ];
 
 const windZoneSelectOptions = [

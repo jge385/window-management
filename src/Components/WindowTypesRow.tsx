@@ -149,6 +149,12 @@ const calculatedFormValues: CalculateFormValueItem[] = [
     condition: false,
     formula: "width - 100",
   },
+  {
+    name: "waterBoxLength",
+    label: "Water Box Length",
+    condition: false,
+    formula: "(height + width) * 2",
+  },
 ];
 
 const compareFormValues: compareFormValues[] = [
@@ -172,19 +178,7 @@ const priceFormValues = [
     label: "Aluminium Price",
     type: "number",
   },
-  {
-    name: "GlassFormula",
-    label: "Glass Price",
-    type: "number",
-  },
-  {
-    name: "AcessoriesFormula",
-    label: "Acessories Price",
-    type: "number",
-  },
 ];
-
-const priceFormValueNames = priceFormValues.map((formValue) => formValue.name);
 
 export default function WindowTypesRow({
   control,
@@ -671,6 +665,34 @@ export default function WindowTypesRow({
           </div>
         );
       })}
+      {/* Accessory Price */}
+      <div>
+        <Text> Acessories Price </Text>
+        <Controller
+          name={`window.${index}.acessoryPrice`}
+          control={control}
+          render={({ field }) => {
+            const result =
+              (rowData.window[index].revelLength * rowData.revelCost +
+                rowData.window[index].flashingLength * rowData.flashingCost +
+                rowData.window[index].supportingBarLength *
+                  rowData.supportingBarCost +
+                rowData.window[index].waterBoxLength * rowData.waterBoxCost) /
+              1000;
+            if (!Number.isNaN(result) && field.value !== result) {
+              field.onChange(result);
+            }
+            return (
+              <Input
+                value={field.value}
+                onChange={field.onChange}
+                type="number"
+                disabled={true}
+              />
+            );
+          }}
+        />
+      </div>
       {/* count */}
       <div>
         <Text> Count </Text>
@@ -695,12 +717,9 @@ export default function WindowTypesRow({
           name={`window.${index}.rowCost`}
           control={control}
           render={({ field }) => {
-            const rowPriceSum = priceFormValueNames.reduce(
-              (accumulator, currentValue) => {
-                return accumulator + rowData.window[index][currentValue];
-              },
-              0
-            );
+            const rowPriceSum =
+              rowData.window[index].AluminiumFormula +
+              rowData.window[index].acessoryPrice;
             const rowTotalCost = Number(
               (rowData.window[index].count * rowPriceSum).toFixed(2)
             );

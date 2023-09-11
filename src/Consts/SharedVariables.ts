@@ -5,36 +5,24 @@ export interface WindowStatusVariablesMap {
 export const SHARED_WINDOW_STATUS_VARIABLES = [
   "fixedCost",
   "awningCost",
-  "slidingFixedCost",
-  "slidingAwningCost",
-  "slidingDoorCost",
-  "slidingTwoFixedCost",
-  "slidingTwoAwningCost",
-  "slidingTwoDoorCost",
+  "slidingCost",
+  "slidingTwoCost",
   "doorCost",
 ];
 
 export const SHARED_WINDOW_STATUS_VARIABLES_AB = [
   "FC",
   "AC",
-  "SFC",
-  "SAC",
-  "SDC",
-  "STFC",
-  "STAC",
-  "STDC",
+  "SC",
+  "STC",
   "DC",
 ];
 
 export const SHARED_WINDOW_STATUS_VARIABLES_AB_MAP: WindowStatusVariablesMap = {
   FC: "fixedCost",
   AC: "awningCost",
-  SFC: "slidingFixedCost",
-  SAC: "slidingAwningCost",
-  SDC: "slidingDoorCost",
-  STFC: "slidingTwoFixedCost",
-  STAC: "slidingTwoAwningCost",
-  STDC: "slidingTwoDoorCost",
+  SC: "slidingCost",
+  STC: "slidingTwoCost",
   DC: "doorCost",
 };
 
