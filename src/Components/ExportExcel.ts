@@ -79,7 +79,7 @@ export async function ExportExcel(formData: any) {
     });
     exportWindowData.push({
       column3: "Trim Size",
-      column4: "(height + 20) X (width + 20)",
+      column4: `${window.height} X ${window.width}`,
     });
     exportWindowData.push({
       column3: "Water Box (mm)",

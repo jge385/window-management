@@ -113,7 +113,7 @@ const calculatedFormValues: CalculateFormValueItem[] = [
     name: "revelLength",
     label: "Revel Length",
     condition: false,
-    formula: "(height + width) * 2 * 1.5",
+    formula: "(height + width) * 2",
   },
   {
     name: "flashingWidthRequired",
