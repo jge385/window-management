@@ -153,7 +153,7 @@ const calculatedFormValues: CalculateFormValueItem[] = [
     name: "waterBoxLength",
     label: "Water Box Length",
     condition: false,
-    formula: "(height + width) * 2",
+    formula: "width + 20",
   },
 ];
 

@@ -198,7 +198,10 @@ export async function ExportInternalExcel(formData: any) {
   const exportWindowData: any[] = [];
 
   worksheet.columns = [
+    { key: "id", width: 20, header: "Window Id" },
     { key: "windowType", width: 20, header: "Window Type" },
+    { key: "height", width: 20, header: "Height" },
+    { key: "width", width: 20, header: "Width" },
     { key: "h1", width: 20, header: "h1" },
     { key: "h2", width: 20, header: "h2" },
     { key: "h3", width: 20, header: "h3" },
@@ -241,7 +244,10 @@ export async function ExportInternalExcel(formData: any) {
 
   windows.forEach((window: any) => {
     exportWindowData.push({
+      id: window.id,
       windowType: window.windowType,
+      height: window.height,
+      width: window.width,
       h1: window?.h1,
       h2: window?.h2,
       h3: window?.h3,
@@ -255,14 +261,17 @@ export async function ExportInternalExcel(formData: any) {
       revelLength: window.revelLength,
       revelWidth: window.revelWidth,
       flashingLength: window.flashingLength,
-      flashingWidth55: window.flashingWidth == 55 ? 55 : 0,
-      flashingWidth75: window.flashingWidth == 75 ? 75 : 0,
-      flashingWidth100: window.flashingWidth == 100 ? 100 : 0,
-      flashingWidth120: window.flashingWidth == 120 ? 120 : 0,
+      flashingWidth55: window.flashingWidth == 55 ? window.flashingLength : 0,
+      flashingWidth75: window.flashingWidth == 75 ? window.flashingLength : 0,
+      flashingWidth100: window.flashingWidth == 100 ? window.flashingLength : 0,
+      flashingWidth120: window.flashingWidth == 120 ? window.flashingLength : 0,
       supportingBarLength: window.supportingBarLength,
-      supportingBarWidth30: window.supportingBarWidth == 30 ? 30 : 0,
-      supportingBarWidth40: window.supportingBarWidth == 40 ? 40 : 0,
-      supportingBarWidth60: window.supportingBarWidth == 60 ? 60 : 0,
+      supportingBarWidth30:
+        window.supportingBarWidth == 30 ? window.supportingBarLength : 0,
+      supportingBarWidth40:
+        window.supportingBarWidth == 40 ? window.supportingBarLength : 0,
+      supportingBarWidth60:
+        window.supportingBarWidth == 60 ? window.supportingBarLength : 0,
       waterBoxLength: window.waterBoxLength,
     });
   });
