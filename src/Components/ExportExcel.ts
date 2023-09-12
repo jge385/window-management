@@ -1,4 +1,5 @@
 import ExcelJS from "exceljs";
+import { countSpecificNumber } from "../Utilities/GenerateFormula";
 
 export async function ExportExcel(formData: any) {
   const workbook = new ExcelJS.Workbook();
@@ -10,6 +11,13 @@ export async function ExportExcel(formData: any) {
   let countSum = 0;
   let areaSum = 0;
   let priceSum = 0;
+  let flashing55Sum = 0;
+  let flashing75Sum = 0;
+  let flashing100Sum = 0;
+  let flashing120Sum = 0;
+  let supportingBarWidth30Sum = 0;
+  let supportingBarWidth40Sum = 0;
+  let supportingBarWidth60Sum = 0;
 
   worksheet.columns = [
     { key: "column1", width: 20 },
@@ -18,10 +26,32 @@ export async function ExportExcel(formData: any) {
     { key: "column4", width: 20 },
   ];
 
+  let revelWidthArray: number[] = [];
+
   windows.forEach((window: any, index: number) => {
     countSum += Number(window.count);
     areaSum += Number(window.area);
     priceSum += Number(window.rowCost);
+
+    revelWidthArray.push(window.revelWidth);
+
+    if (window.flashingWidth == 55) {
+      flashing55Sum += window.flashingWidth;
+    } else if (window.flashingWidth == 75) {
+      flashing75Sum += window.flashingWidth;
+    } else if (window.flashingWidth == 100) {
+      flashing100Sum += window.flashingWidth;
+    } else {
+      flashing120Sum += window.flashingWidth;
+    }
+
+    if (window.supportingBarWidth == 30) {
+      supportingBarWidth30Sum += window.supportingBarWidth;
+    } else if (window.supportingBarWidth == 40) {
+      supportingBarWidth40Sum += window.supportingBarWidth;
+    } else {
+      supportingBarWidth60Sum += window.supportingBarWidth;
+    }
     exportWindowData.push({ column1: "Item no.", column2: index + 1 });
     exportWindowData.push({
       column1: "Window Id",
@@ -92,9 +122,35 @@ export async function ExportExcel(formData: any) {
     worksheet.addRow(row);
   });
 
+  const revelWidthMap = countSpecificNumber(revelWidthArray);
+
   worksheet.addRow({
     column1: "Item Count",
     column2: countSum,
+  });
+
+  Object.keys(revelWidthMap).forEach((revelWidth) => {
+    worksheet.addRow({
+      column1: "Revel Width " + revelWidth,
+      column2: revelWidthMap[Number(revelWidth)],
+    });
+  });
+
+  worksheet.addRow({
+    column1: "Total length of flashing 55",
+    column2: flashing55Sum,
+  });
+  worksheet.addRow({
+    column1: "Total length of flashing 75",
+    column2: flashing75Sum,
+  });
+  worksheet.addRow({
+    column1: "Total length of flashing 100",
+    column2: flashing100Sum,
+  });
+  worksheet.addRow({
+    column1: "Total length of flashing 120",
+    column2: flashing120Sum,
   });
   worksheet.addRow({
     column1: "Total Area",

@@ -82,3 +82,17 @@ export const findClosestSmallNumber = (range: number[], target: number) => {
   }
   return closest;
 };
+
+export const countSpecificNumber = (array: number[]) => {
+  const countObj: { [key: number]: number } = {};
+
+  for (const num of array) {
+    if (countObj[num]) {
+      countObj[num] += num;
+    } else {
+      countObj[num] = num;
+    }
+  }
+
+  return countObj;
+};
