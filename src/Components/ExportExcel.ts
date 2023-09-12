@@ -131,27 +131,41 @@ export async function ExportExcel(formData: any) {
 
   Object.keys(revelWidthMap).forEach((revelWidth) => {
     worksheet.addRow({
-      column1: "Revel Width " + revelWidth,
+      column1: "Total length of revel width " + revelWidth,
       column2: revelWidthMap[Number(revelWidth)],
     });
   });
 
   worksheet.addRow({
-    column1: "Total length of flashing 55",
+    column1: "Total length of flashing width 55",
     column2: flashing55Sum,
   });
   worksheet.addRow({
-    column1: "Total length of flashing 75",
+    column1: "Total length of flashing width 75",
     column2: flashing75Sum,
   });
   worksheet.addRow({
-    column1: "Total length of flashing 100",
+    column1: "Total length of flashing width 100",
     column2: flashing100Sum,
   });
   worksheet.addRow({
-    column1: "Total length of flashing 120",
+    column1: "Total length of flashing width 120",
     column2: flashing120Sum,
   });
+
+  worksheet.addRow({
+    column1: "Total length of supporting bar width 30",
+    column2: supportingBarWidth30Sum,
+  });
+  worksheet.addRow({
+    column1: "Total length of supporting bar width 40",
+    column2: supportingBarWidth40Sum,
+  });
+  worksheet.addRow({
+    column1: "Total length of supporting bar width 60",
+    column2: supportingBarWidth60Sum,
+  });
+
   worksheet.addRow({
     column1: "Total Area",
     column2: areaSum,
