@@ -128,6 +128,17 @@ export async function ExportInternalExcel(formData: any) {
   const exportWindowData: any[] = [];
 
   worksheet.columns = [
+    { key: "windowType", width: 20, header: "Window Type" },
+    { key: "h1", width: 20, header: "h1" },
+    { key: "h2", width: 20, header: "h2" },
+    { key: "h3", width: 20, header: "h3" },
+    { key: "h4", width: 20, header: "h4" },
+    { key: "h5", width: 20, header: "h5" },
+    { key: "w1", width: 20, header: "w1" },
+    { key: "w2", width: 20, header: "w2" },
+    { key: "w3", width: 20, header: "w3" },
+    { key: "w4", width: 20, header: "w4" },
+    { key: "w5", width: 20, header: "w5" },
     { key: "revelLength", width: 20, header: "Revel Length" },
     { key: "revelWidth", width: 20, header: "Revel Width" },
     { key: "flashingLength", width: 20, header: "Flashing Length" },
@@ -151,10 +162,26 @@ export async function ExportInternalExcel(formData: any) {
       width: 20,
       header: "Supporting Bar Width 60",
     },
+    {
+      key: "waterBoxLength",
+      width: 20,
+      header: "Water Box Length",
+    },
   ];
 
   windows.forEach((window: any) => {
     exportWindowData.push({
+      windowType: window.windowType,
+      h1: window?.h1,
+      h2: window?.h2,
+      h3: window?.h3,
+      h4: window?.h4,
+      h5: window?.h5,
+      w1: window?.w1,
+      w2: window?.w2,
+      w3: window?.w3,
+      w4: window?.w4,
+      w5: window?.w5,
       revelLength: window.revelLength,
       revelWidth: window.revelWidth,
       flashingLength: window.flashingLength,
@@ -166,6 +193,7 @@ export async function ExportInternalExcel(formData: any) {
       supportingBarWidth30: window.supportingBarWidth == 30 ? 30 : 0,
       supportingBarWidth40: window.supportingBarWidth == 40 ? 40 : 0,
       supportingBarWidth60: window.supportingBarWidth == 60 ? 60 : 0,
+      waterBoxLength: window.waterBoxLength,
     });
   });
 
