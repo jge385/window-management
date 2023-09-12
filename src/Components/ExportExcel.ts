@@ -18,6 +18,7 @@ export async function ExportExcel(formData: any) {
   let supportingBarWidth30Sum = 0;
   let supportingBarWidth40Sum = 0;
   let supportingBarWidth60Sum = 0;
+  let waterBoxLengthSum = 0;
 
   worksheet.columns = [
     { key: "column1", width: 20 },
@@ -32,25 +33,26 @@ export async function ExportExcel(formData: any) {
     countSum += Number(window.count);
     areaSum += Number(window.area);
     priceSum += Number(window.rowCost);
+    waterBoxLengthSum += Number(window.waterBoxLength);
 
     revelWidthArray.push(window.revelWidth);
 
     if (window.flashingWidth == 55) {
-      flashing55Sum += window.flashingWidth;
+      flashing55Sum += window.flashingLength;
     } else if (window.flashingWidth == 75) {
-      flashing75Sum += window.flashingWidth;
+      flashing75Sum += window.flashingLength;
     } else if (window.flashingWidth == 100) {
-      flashing100Sum += window.flashingWidth;
+      flashing100Sum += window.flashingLength;
     } else {
-      flashing120Sum += window.flashingWidth;
+      flashing120Sum += window.flashingLength;
     }
 
     if (window.supportingBarWidth == 30) {
-      supportingBarWidth30Sum += window.supportingBarWidth;
+      supportingBarWidth30Sum += window.supportingBarLength;
     } else if (window.supportingBarWidth == 40) {
-      supportingBarWidth40Sum += window.supportingBarWidth;
+      supportingBarWidth40Sum += window.supportingBarLength;
     } else {
-      supportingBarWidth60Sum += window.supportingBarWidth;
+      supportingBarWidth60Sum += window.supportingBarLength;
     }
     exportWindowData.push({ column1: "Item no.", column2: index + 1 });
     exportWindowData.push({
@@ -131,39 +133,44 @@ export async function ExportExcel(formData: any) {
 
   Object.keys(revelWidthMap).forEach((revelWidth) => {
     worksheet.addRow({
-      column1: "Total length of revel width " + revelWidth,
+      column1: "Total length of revel " + revelWidth,
       column2: revelWidthMap[Number(revelWidth)],
     });
   });
 
   worksheet.addRow({
-    column1: "Total length of flashing width 55",
+    column1: "Total length of flashing 55",
     column2: flashing55Sum,
   });
   worksheet.addRow({
-    column1: "Total length of flashing width 75",
+    column1: "Total length of flashing 75",
     column2: flashing75Sum,
   });
   worksheet.addRow({
-    column1: "Total length of flashing width 100",
+    column1: "Total length of flashing 100",
     column2: flashing100Sum,
   });
   worksheet.addRow({
-    column1: "Total length of flashing width 120",
+    column1: "Total length of flashing 120",
     column2: flashing120Sum,
   });
 
   worksheet.addRow({
-    column1: "Total length of supporting bar width 30",
+    column1: "Total length of supporting bar 30",
     column2: supportingBarWidth30Sum,
   });
   worksheet.addRow({
-    column1: "Total length of supporting bar width 40",
+    column1: "Total length of supporting bar 40",
     column2: supportingBarWidth40Sum,
   });
   worksheet.addRow({
-    column1: "Total length of supporting bar width 60",
+    column1: "Total length of supporting bar 60",
     column2: supportingBarWidth60Sum,
+  });
+
+  worksheet.addRow({
+    column1: "Total length of water box",
+    column2: waterBoxLengthSum,
   });
 
   worksheet.addRow({
@@ -189,8 +196,6 @@ export async function ExportExcel(formData: any) {
 }
 
 export async function ExportInternalExcel(formData: any) {
-  console.log("formData ", formData);
-
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet("Sheet 1");
 
